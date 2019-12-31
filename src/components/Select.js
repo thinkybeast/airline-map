@@ -8,6 +8,7 @@ class Select extends Component {
         name={this.props.titleKey}
         id={this.props.valueKey}
         onChange={this.props.onSelect}
+        value={this.props.value}
       >
         <option>{this.props.allTitle}</option>
         {this.props.options.map((option, idx) => {

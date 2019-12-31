@@ -18,6 +18,10 @@ section {
   text-align: center;
 }
 
+div.routeFilter {
+  margin-bottom: 15px;
+}
+
 table.routes-table {
   border-collapse: collapse;
   margin: 0 auto;

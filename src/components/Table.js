@@ -59,7 +59,7 @@ class Table extends Component {
             })}
           </tbody>
         </table>
-        <p>Showing {firstRow + 1}-{lastRow} of {this.props.rows.length} routes.</p>
+        <p>Showing {this.props.rows.length > 0 ? firstRow + 1 : 0}-{lastRow} of {this.props.rows.length} routes.</p>
         <button
           onClick={this.handlePrevPage}
           disabled={this.isFirstPage()}

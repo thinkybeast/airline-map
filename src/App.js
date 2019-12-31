@@ -5,11 +5,14 @@ import Table from './components/Table'
 import Select from './components/Select'
 
 
-
-
 class App extends Component {
   state = {
-    selectedRoutes: Routes.routes,
+    airlineFilter: "",
+    airportFilter: "",
+  }
+
+  isFilterSelected = () => {
+    return this.state.airlineFilter || this.state.airportFilter;
   }
 
   formatValue = (property, value) => {
@@ -17,45 +20,52 @@ class App extends Component {
                                       Routes.getAirportByCode(value);
   }
 
-  handleAirlineChange = (e) => {
-    const selection = e.target.value;
-    if(selection === 'All Airlines') {
-      this.setState({
-        selectedRoutes: Routes.routes,
-      });
-      return;
-    }
-
-    const selectedRoutes = Routes.routes.filter((route) => {
-      const airline = Routes.getAirlineById(route.airline);
-      return selection === airline;
-    })
+  showAllRoutes = () => {
     this.setState({
-      selectedRoutes: selectedRoutes,
+      airlineFilter: "",
+      airportFilter: "",
     })
   }
 
-  handleAirportChange = (e) => {
-    const selection = e.target.value;
-    if (selection === 'All Airports') {
-      this.setState({
-        selectedRoutes: Routes.routes,
-      })
-      return;
-    }
+  filterByAirline = (routes) => {
+    return routes.filter((route) => {
+      const airline = Routes.getAirlineById(route.airline);
+      return this.state.airlineFilter === airline;
+    })
+  }
 
+  filterByAirport = (routes) => {
     const code = Routes.airports.find((airport) => {
-      return airport.name === selection;
+      return airport.name === this.state.airportFilter;
     }).code;
-    console.log(code);
-    const selectedRoutes = Routes.routes.filter(route => {
+
+    return routes.filter(route => {
       return route.src === code || route.dest === code;
     })
-    console.log(selectedRoutes);
-    this.setState({
-      selectedRoutes: selectedRoutes,
-    })
+  }
 
+  handleAirlineChange = (e) => {
+    const selection = (e.target.value === 'All Airlines') ? "" : e.target.value;
+    this.setState({ airlineFilter: selection })
+  }
+
+  handleAirportChange = (e) => {
+    const selection = (e.target.value === 'All Airports') ? "" : e.target.value;
+    this.setState({ airportFilter: selection })
+  }
+
+  getFilteredRoutes = () => {
+    let filteredRoutes = Routes.routes;
+
+    if(this.state.airlineFilter) {
+      filteredRoutes = this.filterByAirline(filteredRoutes);
+    }
+
+    if(this.state.airportFilter) {
+      filteredRoutes = this.filterByAirport(filteredRoutes);
+    }
+
+    return filteredRoutes;
   }
 
   render() {
@@ -64,6 +74,8 @@ class App extends Component {
       {name: 'Source Airport', property: 'src'},
       {name: 'Destination Airport', property: 'dest'},
     ];
+
+    let filteredRoutes = this.getFilteredRoutes();
 
     return (
       <div className="app">
@@ -74,7 +86,7 @@ class App extends Component {
           <p>
             Welcome to the app!
           </p>
-          <div>
+          <div id="routeFilter">
             <span>Show routes on </span>
             <Select
               valueKey="airline-select"
@@ -82,6 +94,7 @@ class App extends Component {
               options={Routes.airlines}
               allTitle="All Airlines"
               onSelect={this.handleAirlineChange}
+              value={this.state.airlineFilter}
             />
             <span> fliying in or out of </span>
             <Select
@@ -90,10 +103,23 @@ class App extends Component {
               options={Routes.airports}
               allTitle="All Airports"
               onSelect={this.handleAirportChange}
+              value={this.state.airportFilter}
             />
+            <button
+              onClick={this.showAllRoutes}
+              disabled={!this.isFilterSelected()}
+            >
+              Show All Routes
+            </button>
           </div>
 
-          <Table className='routes-table' columns={columns} rows={this.state.selectedRoutes} format={this.formatValue} perPage={30} />
+          <Table
+            className='routes-table'
+            columns={columns}
+            rows={filteredRoutes}
+            format={this.formatValue}
+            perPage={30}
+          />
         </section>
       </div>
     );
