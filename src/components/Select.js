@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 
 class Select extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      allOptions: this.props.filteredOptions,
+    }
+  }
+
+  isDisabled = (option) => {
+    return !this.props.filteredOptions.find(o => o.name === option);
+  }
+
   render(){
     return (
       <select
@@ -11,10 +22,11 @@ class Select extends Component {
         value={this.props.value}
       >
         <option>{this.props.allTitle}</option>
-        {this.props.options.map((option, idx) => {
+        {this.state.allOptions.map((option, idx) => {
           return (
             <option
               key={option.name + String(idx)}
+              disabled={this.isDisabled(option.name)}
             >
               {option.name}
             </option>

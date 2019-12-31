@@ -68,6 +68,21 @@ class App extends Component {
     return filteredRoutes;
   }
 
+  getFilteredAirlines = (filteredRoutes) => {
+    return Routes.airlines.filter(airline => {
+      return filteredRoutes.map(route => route.airline)
+                           .find(id => id === airline.id);
+    })
+  }
+
+  getFilteredAirports = (filteredRoutes) => {
+    return Routes.airports.filter(airport => {
+      return filteredRoutes.find(route => {
+        return route.src === airport.code || route.dest === airport.code;
+      })
+    })
+  }
+
   render() {
     const columns = [
       {name: 'Airline', property: 'airline'},
@@ -75,7 +90,9 @@ class App extends Component {
       {name: 'Destination Airport', property: 'dest'},
     ];
 
-    let filteredRoutes = this.getFilteredRoutes();
+    const filteredRoutes = this.getFilteredRoutes();
+    const filteredAirlines = this.getFilteredAirlines(filteredRoutes);
+    const filteredAirports = this.getFilteredAirports(filteredRoutes);
 
     return (
       <div className="app">
@@ -91,19 +108,21 @@ class App extends Component {
             <Select
               valueKey="airline-select"
               titleKey="airline"
-              options={Routes.airlines}
+              filteredOptions={filteredAirlines}
               allTitle="All Airlines"
               onSelect={this.handleAirlineChange}
               value={this.state.airlineFilter}
+              format={this.formatValue}
             />
-            <span> fliying in or out of </span>
+            <span> flying in or out of </span>
             <Select
               valueKey="airport-select"
               titleKey="airport"
-              options={Routes.airports}
+              filteredOptions={filteredAirports}
               allTitle="All Airports"
               onSelect={this.handleAirportChange}
               value={this.state.airportFilter}
+              format={this.formatValue}
             />
             <button
               onClick={this.showAllRoutes}
