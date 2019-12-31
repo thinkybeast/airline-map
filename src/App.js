@@ -3,6 +3,7 @@ import './App.css';
 import Routes from './data';
 import Table from './components/Table'
 import Select from './components/Select'
+import Map from './components/Map'
 
 
 class App extends Component {
@@ -17,7 +18,7 @@ class App extends Component {
 
   formatValue = (property, value) => {
     return (property === 'airline') ? Routes.getAirlineById(value) :
-                                      Routes.getAirportByCode(value);
+                                      Routes.getAirportByCode(value).name;
   }
 
   showAllRoutes = () => {
@@ -100,9 +101,10 @@ class App extends Component {
           <h1 className="title">Airline Routes</h1>
         </header>
         <section>
-          <p>
-            Welcome to the app!
-          </p>
+          <Map
+            routes={filteredRoutes}
+            getAirport={Routes.getAirportByCode}
+          />
           <div id="routeFilter">
             <span>Show routes on </span>
             <Select
