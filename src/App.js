@@ -18,8 +18,8 @@ class App extends Component {
   }
 
   handleAirlineChange = (e) => {
-    const selectedAirline = e.target.value;
-    if(selectedAirline === 'All Airlines') {
+    const selection = e.target.value;
+    if(selection === 'All Airlines') {
       this.setState({
         selectedRoutes: Routes.routes,
       });
@@ -28,11 +28,34 @@ class App extends Component {
 
     const selectedRoutes = Routes.routes.filter((route) => {
       const airline = Routes.getAirlineById(route.airline);
-      return selectedAirline === airline;
+      return selection === airline;
     })
     this.setState({
       selectedRoutes: selectedRoutes,
     })
+  }
+
+  handleAirportChange = (e) => {
+    const selection = e.target.value;
+    if (selection === 'All Airports') {
+      this.setState({
+        selectedRoutes: Routes.routes,
+      })
+      return;
+    }
+
+    const code = Routes.airports.find((airport) => {
+      return airport.name === selection;
+    }).code;
+    console.log(code);
+    const selectedRoutes = Routes.routes.filter(route => {
+      return route.src === code || route.dest === code;
+    })
+    console.log(selectedRoutes);
+    this.setState({
+      selectedRoutes: selectedRoutes,
+    })
+
   }
 
   render() {
@@ -54,9 +77,19 @@ class App extends Component {
           <div>
             <span>Show routes on </span>
             <Select
+              valueKey="airline-select"
+              titleKey="airline"
               options={Routes.airlines}
               allTitle="All Airlines"
               onSelect={this.handleAirlineChange}
+            />
+            <span> fliying in or out of </span>
+            <Select
+              valueKey="airport-select"
+              titleKey="airport"
+              options={Routes.airports}
+              allTitle="All Airports"
+              onSelect={this.handleAirportChange}
             />
           </div>
 

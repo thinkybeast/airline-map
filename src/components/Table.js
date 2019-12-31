@@ -32,8 +32,9 @@ class Table extends Component {
   }
 
   render() {
-    let [ firstRow, lastRow ] = [this.state.rowNum, this.state.rowNum + this.props.perPage - 1];
-    lastRow = (lastRow > this.props.rows.length - 1) ? this.props.rows.length - 1 : lastRow;
+    let [ firstRow, lastRow ] = [this.state.rowNum, this.state.rowNum + this.props.perPage];
+    lastRow = (lastRow > this.props.rows.length) ?
+              this.props.rows.length : lastRow;
     const displayedRows = this.props.rows.slice(firstRow, lastRow);
 
     return (
@@ -58,7 +59,7 @@ class Table extends Component {
             })}
           </tbody>
         </table>
-        <p>Showing {firstRow + 1}-{lastRow + 1} of {this.props.rows.length} routes.</p>
+        <p>Showing {firstRow + 1}-{lastRow} of {this.props.rows.length} routes.</p>
         <button
           onClick={this.handlePrevPage}
           disabled={this.isFirstPage()}

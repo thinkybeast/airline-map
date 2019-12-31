@@ -5,17 +5,17 @@ class Select extends Component {
   render(){
     return (
       <select
-        name="select_airline"
-        id="select_airline"
+        name={this.props.titleKey}
+        id={this.props.valueKey}
         onChange={this.props.onSelect}
       >
         <option>{this.props.allTitle}</option>
-        {this.props.options.map(airline => {
+        {this.props.options.map((option, idx) => {
           return (
             <option
-              key={airline.name}
+              key={option.name + String(idx)}
             >
-              {airline.name}
+              {option.name}
             </option>
           )
         })}
