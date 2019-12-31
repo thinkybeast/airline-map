@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Routes from './data';
 import Table from './components/Table'
+import Select from './components/Select'
 
 
 
@@ -18,8 +19,6 @@ class App extends Component {
 
   handleAirlineChange = (e) => {
     const selectedAirline = e.target.value;
-    console.log(selectedAirline);
-    // debugger;
     if(selectedAirline === 'All Airlines') {
       this.setState({
         selectedRoutes: Routes.routes,
@@ -52,22 +51,15 @@ class App extends Component {
           <p>
             Welcome to the app!
           </p>
-          <select
-            name="select_airline"
-            id="select_airline"
-            onChange={this.handleAirlineChange}
-          >
-            <option>All Airlines</option>
-            {Routes.airlines.map(airline => {
-              return (
-                <option
-                  key={airline.name}
-                >
-                  {airline.name}
-                </option>
-              )
-            })}
-          </select>
+          <div>
+            <span>Show routes on </span>
+            <Select
+              options={Routes.airlines}
+              allTitle="All Airlines"
+              onSelect={this.handleAirlineChange}
+            />
+          </div>
+
           <Table className='routes-table' columns={columns} rows={this.state.selectedRoutes} format={this.formatValue} perPage={30} />
         </section>
       </div>
